@@ -96,5 +96,5 @@ void SignUp()
 
 void Login()
 {
-  // 학번으로 시작할 시에
+  // 학번으로 시작함
 }
