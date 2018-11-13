@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-//void PrintMenu();
+void PrintMenu();
 void SignUp();
 void Login();
 
