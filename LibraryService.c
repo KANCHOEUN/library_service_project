@@ -8,6 +8,13 @@ void SignUp();
 int Login();
 void Client_Login();
 void Admin_Login();
+void Register();
+void Delete();
+void Borrow();
+void Return();
+void List();
+
+void Search();
 
 union student_number
 {
@@ -23,6 +30,8 @@ typedef struct client{
         char phonenumber[30];
         struct client * next;
 }Client;
+
+int count = 1;
 
 int main()
 {
@@ -40,6 +49,10 @@ int main()
 void PrintMenu()
 {
   char num;
+
+  count = 1;
+
+  system("clear");
 
   printf(">> 도서관 서비스 <<\n");
   printf("1.회원 가입\t2.로그인\t3.프로그램 종료\n\n");
@@ -104,7 +117,6 @@ void SignUp()
 
   printf("\n회원가입이 되셨습니다.\n\n");
   sleep(2);
-  system("clear");
 }
 
 int Login()
@@ -161,7 +173,10 @@ int Login()
       {
         if(strcmp(login.password, newNode->password) == 0)
         {
-          Admin_Login();
+          while(count)
+          {
+            Admin_Login();
+          }
           fclose(ofp);
           return 0;
         }
@@ -179,7 +194,10 @@ int Login()
       {
         if(strcmp(login.password, newNode->password) == 0)
         {
-          Client_Login();
+          while(count)
+          {
+            Client_Login();
+          }
           fclose(ofp);
           return 0;
         }
@@ -200,9 +218,91 @@ int Login()
 
 void Client_Login()
 {
+  system("clear");
+
   printf("client ok\n");
+  count = 0;
+  sleep(2);
+
+  system("clear");
 }
 void Admin_Login()
 {
-  printf("admin ok\n");
+  system("clear");
+
+  char choice;
+
+  printf(">> 관리자 메뉴 <<\n");
+  printf("1. 도서 등록\t2. 도서 삭제\n3. 도서 대여\t4. 도서 반납\n5. 도서 검색\t6. 회원 목록\n7. 로그아웃\t8.프로그램 종료\n\n");
+  printf("번호를 선택하세요 : ");
+  scanf("%s", &choice);
+  getchar();
+
+  switch(choice)
+  {
+    case '1' :
+        Register();
+        break;
+    case '2' :
+        Delete();
+        break;
+    case '3' :
+        Borrow();
+        break;
+    case '4' :
+        Return();
+        break;
+    case '5' :
+        Search();
+        break;
+    case '6' :
+        List();
+        break;
+    case '7' :
+        count = 0;
+        break;
+    case '8' :
+        printf("\n");
+        exit(1);
+    default :
+        printf("\n다시 입력해주세요.\n\n");
+        sleep(2);
+        break;
+  }
+}
+
+void Register()
+{
+        printf("Register\n\n");
+        sleep(2);
+}
+
+void Delete()
+{
+        printf("Delete\n\n");
+        sleep(2);
+}
+
+void Borrow()
+{
+        printf("Borrow\n\n");
+        sleep(2);
+}
+
+void Return()
+{
+        printf("Return\n\n");
+        sleep(2);
+}
+
+void Search()
+{
+        printf("Search\n\n");
+        sleep(2);
+}
+
+void List()
+{
+        printf("List\n\n");
+        sleep(2);
 }
