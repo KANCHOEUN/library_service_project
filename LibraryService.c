@@ -7,6 +7,10 @@ void PrintMenu();
 void SignUp();
 int Login();
 void Client_Login();
+void My_Borrow_List();
+void Edit();
+void DropOut();
+
 void Admin_Login();
 void Register();
 void Delete();
@@ -15,6 +19,7 @@ void Return();
 void List();
 
 void Search();
+// void BookList();
 
 union student_number
 {
@@ -220,12 +225,59 @@ void Client_Login()
 {
   system("clear");
 
-  printf("client ok\n");
-  count = 0;
-  sleep(2);
+  char choice;
 
-  system("clear");
+  printf(">> 회원 메뉴 <<\n");
+  printf("1. 도서 검색\t2. 내 대여 목록\n3. 개인정보 수정\t4. 회원 탈퇴\n5. 로그아웃\t6. 프로그램 종료\n\n");
+  printf("번호를 선택하세요 : ");
+  scanf("%s", &choice);
+  getchar();
+
+  switch(choice)
+  {
+    case '1' :
+        Search();
+        break;
+    case '2' :
+        My_Borrow_List();
+        break;
+    case '3' :
+        Edit();
+        break;
+    case '4' :
+        DropOut();
+        break;
+    case '5' :
+        count = 0;
+        break;
+    case '6' :
+        printf("\n");
+        exit(1);
+    default :
+        printf("\n다시 입력해주세요.\n\n");
+        sleep(2);
+        break;
+  }
 }
+
+void My_Borrow_List()
+{
+  printf("My_Borrow_List\n\n");
+  sleep(2);
+}
+
+void Edit()
+{
+  printf("Edit\n\n");
+  sleep(2);
+}
+
+void DropOut()
+{
+  printf("DropOut\n\n");
+  sleep(2);
+}
+
 void Admin_Login()
 {
   system("clear");
@@ -295,14 +347,14 @@ void Return()
         sleep(2);
 }
 
-void Search()
-{
-        printf("Search\n\n");
-        sleep(2);
-}
-
 void List()
 {
         printf("List\n\n");
+        sleep(2);
+}
+
+void Search()
+{
+        printf("Search\n\n");
         sleep(2);
 }
