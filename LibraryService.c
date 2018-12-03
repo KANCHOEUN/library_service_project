@@ -38,7 +38,7 @@ typedef struct book {
 	struct book * next;
 }Book;
 
-void Search();
+void Search(); // 도서 검색
 void NameFind(Book *); //책제목 검색
 void PublisherFind(Book *); //출판사 검색
 void IsbnFind(Book *); //isbn 검색
@@ -96,7 +96,7 @@ void PrintMenu()
 	}
 }
 
-void SignUp()
+void SignUp() // 회원 가입 함수
 {
 	// 회원가입에 추가해야할 사항
 	// 1. client.txt 파일 학번 순으로 정렬
@@ -137,7 +137,7 @@ void SignUp()
 	sleep(2);
 }
 
-int Login()
+int Login() // 로그인 함수
 {
 	FILE * ofp;
 	Client login;
@@ -171,7 +171,7 @@ int Login()
 
 		tail = newNode;
 
-		if (strcmp(login.id, "admin") == 0)
+		if (strcmp(login.id, "admin") == 0) // 입력 받은 id가 admin 일 때
 		{
 			if (strcmp(login.password, newNode->password) == 0)
 			{
@@ -182,14 +182,14 @@ int Login()
 				fclose(ofp);
 				return 0;
 			}
-		}
-		else
-		{
-			printf("아이디 혹은 비밀번호가 잘못되었습니다.\n\n");
-			return Login();
+			else
+			{
+				printf("아이디 혹은 비밀번호가 잘못되었습니다.\n\n");
+				return Login();
+			}
 		}
 
-		if (strcmp(login.id, newNode->id) == 0)
+		if (strcmp(login.id, newNode->id) == 0) // 입력 받은 id가 newNode의 id와 일치할 때
 		{
 			if (strcmp(login.password, newNode->password) == 0)
 			{
@@ -206,7 +206,8 @@ int Login()
 				return Login();
 			}
 		}
-		if (feof(ofp))
+
+		if (feof(ofp)) // 파일의 끝까지 찾았는데 존재하지 않은 id일 경우
 		{
 			printf("아이디 혹은 비밀번호가 잘못되었습니다.\n\n");
 			return Login();
@@ -464,7 +465,6 @@ void Search()
 
 void NameFind(Book * head) {
    char search[50];
-   // int num = 0;
    Book * tmp = head;
    printf("도서명을 입력하세요 : ");
    gets(search);
@@ -496,7 +496,6 @@ void NameFind(Book * head) {
 void PublisherFind(Book * head)
 {
 	char search[50];
-	// int num = 0;
 	Book * tmp = head;
 	printf("출판사를 입력하세요 : ");
 	gets(search);
@@ -528,7 +527,6 @@ void PublisherFind(Book * head)
 void IsbnFind(Book * head)
 {
 	long long search;
-	// int num = 0;
 	Book * tmp = head;
 	printf("ISBN을 입력하세요 : ");
 	scanf("%lld", &search);
@@ -562,7 +560,6 @@ void IsbnFind(Book * head)
 void AuthorFind(Book * head)
 {
 	char search[50];
-	// int num = 0;
 	Book * tmp = head;
 	printf("저자명을 입력하세요 : ");
 	gets(search);
