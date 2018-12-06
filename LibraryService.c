@@ -631,7 +631,6 @@ void AuthorFind(Book * head)
        }
    }
 }
-
 // void AuthorFind(Book * head)
 // {
 // 	char search[50];
@@ -660,6 +659,7 @@ void AuthorFind(Book * head)
 // 	{
 //
 // 	}
+//}
 // 	// gets(search);
 // 	// while (1)
 // 	// {
@@ -693,7 +693,7 @@ void BookPrintList(Book * head)
 	int i = 1; // 확인용 나중에 지워야 함
 	Book * tmp = head;
 	printf("\n");
-	while(tmp != NULL)
+	while(tmp->next != NULL)
 	{
 		printf("%d. %lld|%s|%s|%s|%d|%s|%c\n", i++, tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
 		tmp = tmp->next;
