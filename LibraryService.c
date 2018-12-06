@@ -252,17 +252,17 @@ Book * BookRead() {
 	FILE * sfp = fopen("book.txt", "w");
 	Book * tmp = head;
 
-	while (tmp != NULL)
+	while (tmp->next != NULL)
 	{
 		 fprintf(sfp, "%lld|%s|%s|%s|%d|%s|%c\n", tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
 		 tmp = tmp->next;
 	}
-	fclose(sfp);
 
-	int i = 1; // 확인용 나중에 지워야 함
+	fclose(sfp);
 	tmp = head;
+	int i = 1; // 확인용 나중에 지워야 함
 	printf("\n");
-	while(tmp != NULL)
+	while(tmp->next != NULL)
 	{
 		printf("%d. %lld|%s|%s|%s|%d|%s|%c\n", i++, tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
 		tmp = tmp->next;
@@ -270,6 +270,7 @@ Book * BookRead() {
 
 	return head; //Book.txt 정보 구조체 헤드 리턴
 }
+
 
 int CountBookNum(Book * head)
 {
@@ -600,39 +601,92 @@ void IsbnFind(Book * head)
 		}
 	}
 }
-
 void AuthorFind(Book * head)
 {
-	char search[50];
-	Book * tmp = head;
-	printf("\n저자명을 입력하세요 : ");
-	gets(search);
-	while (1)
-	{
-		if (strstr(tmp->author, search) != NULL)
-		{
-			//printf("%lld|%s|%s|%s|%d|%s|%c\n", tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
-			printf("\n>> 검색 결과 <<\n");
-			printf("도서명 : %s\n", tmp->name);
-			printf("출판사 : %s\n", tmp->publisher);
-			printf("저자명 : %s\n", tmp->author);
-			printf("ISBN : %lld\n", tmp->isbn);
-			printf("소장처 : %s\n\n", tmp->library);
-			// 여기다가 대여 가능 목록 쓸 것
-			break;
-		}
+   char search[50];
+   Book * tmp = head;
+   printf("저자명을 입력하세요 : ");
+   gets(search);
+   while (1) {
+       if (strstr(tmp->author, search) != NULL) {
+            //printf("%lld|%s|%s|%s|%d|%s|%c\n", tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
+            printf(">> 검색 결과 <<\n");
+            printf("도서명 : %s\n", tmp->name);
+            printf("출판사 : %s\n", tmp->publisher);
+            printf("저자명 : %s\n", tmp->author);
+            printf("ISBN : %lld\n", tmp->isbn);
+            printf("소장처 : %s\n\n", tmp->library);
+            // 여기다가 대여 가능 목록 쓸 것
+            break;
+       }
 
-		if (tmp->next == NULL)
-		{
-		 	printf("\n존재하지 않는 도서입니다.\n\n");
-			break;
-		}
-		else
-		{
-			tmp = tmp -> next;
-		}
-	}
+       if (tmp->next == NULL)
+       {
+          printf("존재하지 않는 도서입니다.\n\n");
+          break;
+       }
+       else
+       {
+          tmp = tmp -> next;
+       }
+   }
 }
+
+// void AuthorFind(Book * head)
+// {
+// 	char search[50];
+// 	Book * tmp = head;
+// 	printf("\n저자명을 입력하세요 : ");
+// 	gets(search);
+//
+// 	while(tmp->next != NULL)
+// 	{
+// 		if(strstr(tmp->author, search) != NULL)
+// 		{
+// 			//printf("%lld|%s|%s|%s|%d|%s|%c\n", tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
+// 			printf("\n>> 검색 결과 <<\n");
+// 			printf("도서명 : %s\n", tmp->name);
+// 			printf("출판사 : %s\n", tmp->publisher);
+// 			printf("저자명 : %s\n", tmp->author);
+// 			printf("ISBN : %lld\n", tmp->isbn);
+// 			printf("소장처 : %s\n\n", tmp->library);
+// 			// 여기다가 대여 가능 목록 쓸 것
+// 			break;
+// 		}
+// 		tmp = tmp->next;
+// 	}
+//
+// 	if(tmp->next == NULL)
+// 	{
+//
+// 	}
+// 	// gets(search);
+// 	// while (1)
+// 	// {
+// 	// 	if (strstr(tmp->author, search) != NULL)
+// 	// 	{
+// 	// 		//printf("%lld|%s|%s|%s|%d|%s|%c\n", tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
+// 	// 		printf("\n>> 검색 결과 <<\n");
+// 	// 		printf("도서명 : %s\n", tmp->name);
+// 	// 		printf("출판사 : %s\n", tmp->publisher);
+// 	// 		printf("저자명 : %s\n", tmp->author);
+// 	// 		printf("ISBN : %lld\n", tmp->isbn);
+// 	// 		printf("소장처 : %s\n\n", tmp->library);
+// 	// 		// 여기다가 대여 가능 목록 쓸 것
+// 	// 		break;
+// 	// 	}
+// 	//
+// 	// 	if (tmp->next == NULL)
+// 	// 	{
+// 	// 	 	printf("\n존재하지 않는 도서입니다.\n\n");
+// 	// 		break;
+// 	// 	}
+// 	// 	else
+// 	// 	{
+// 	// 		tmp = tmp -> next;
+// 	// 	}
+// 	}
+// }
 
 void BookPrintList(Book * head)
 {
