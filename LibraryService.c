@@ -26,6 +26,7 @@ typedef struct book {
 void PrintMenu(); // 초기 화면
 void SignUp(); // 회원 가입
 int Login(); // 로그인
+
 void Client_Login(); // 회원 로그인
 void My_Borrow_List(); // 내 대여 목록
 void Edit(); // 개인 정보 수정
@@ -47,7 +48,7 @@ void AuthorFind(Book *); //저자 검색
 void BookPrintList(Book *); //전체 검색(출력)
 
 Book * BookRead();
-Book * BookBubbleSort(Book *);
+Book * BookBubbleSort(Book *); // Book.txt isbn 순으로 정렬
 
 int count = 1;
 
@@ -157,7 +158,6 @@ int Login() // 로그인 함수
 	{
 		newNode = (Client *)malloc(sizeof(Client));
 		fscanf(ofp, "%[^|]|%[^|]|%*[^\n]", newNode->id, newNode->password);
-		printf("%s, %s\n\n", newNode->id, newNode->password);
 		fgetc(ofp);
 		newNode->next = NULL;
 
@@ -183,11 +183,6 @@ int Login() // 로그인 함수
 				fclose(ofp);
 				return 0;
 			}
-			else
-			{
-				printf("아이디 혹은 비밀번호가 잘못되었습니다.\n\n");
-				return Login();
-			}
 		}
 
 		if (strcmp(login.id, newNode->id) == 0) // 입력 받은 id가 newNode의 id와 일치할 때
@@ -200,11 +195,6 @@ int Login() // 로그인 함수
 				}
 				fclose(ofp);
 				return 0;
-			}
-			else
-			{
-				printf("아이디 혹은 비밀번호가 잘못되었습니다.\n\n");
-				return Login();
 			}
 		}
 
@@ -228,7 +218,6 @@ Book * BookRead() {
 	{
 		newNode = (Book *)malloc(sizeof(Book));
 		fscanf(ifp, "%lld|%[^|]|%[^|]|%[^|]|%d|%[^|]|%[^\n]", &(newNode->isbn), newNode->name, newNode->publisher, newNode->author, &(newNode->booknum), newNode->library, &(newNode->yes_no));
-		//printf("%lld|%s|%s|%s|%d|%s|%c\n", newNode->isbn, newNode->name, newNode->publisher, newNode->author, newNode->booknum, newNode->library, newNode->yes_no);
 		fgetc(ifp);
 		newNode->next = NULL;
 
@@ -250,7 +239,6 @@ Book * BookRead() {
 
 	head = BookBubbleSort(head);
 
-	// 확인용 출력 나중에 지워야 함
 	FILE * sfp = fopen("book.txt", "w");
 	Book * tmp = head;
 
@@ -261,18 +249,8 @@ Book * BookRead() {
 	}
 
 	fclose(sfp);
-	tmp = head;
-	int i = 1; // 확인용 나중에 지워야 함
-	printf("\n");
-	while(tmp->next != NULL)
-	{
-		printf("%d. %lld|%s|%s|%s|%d|%s|%c\n", i++, tmp->isbn, tmp->name, tmp->publisher, tmp->author, tmp->booknum, tmp->library, tmp->yes_no);
-		tmp = tmp->next;
-	}
-
 	return head; //Book.txt 정보 구조체 헤드 리턴
 }
-
 
 int CountBookNum(Book * head)
 {
@@ -283,7 +261,6 @@ int CountBookNum(Book * head)
 		num++;
 		tmp = tmp -> next;
 	}
-	printf("num : %d\n\n", num);
 	return num;
 }
 
@@ -461,8 +438,7 @@ void ClientList()
 
 void Search()
 {
-	printf("Search\n"); // 확인용
-	Book * head;
+	Book * head = (Book *)malloc(sizeof(Book));
 	head = BookRead();
   char choice;
 
@@ -517,6 +493,8 @@ void PrintBookInfo(Book * tmp)
 void NameFind(Book * head)
 {
   char search[50];
+	int booknum;
+	int yes;
   Book * tmp = head;
 	char * ptr = NULL;
 
@@ -525,11 +503,36 @@ void NameFind(Book * head)
 
 	while(tmp->next != NULL)
 	{
-		printf("%lld\n\n", tmp->isbn);
+		booknum = 1;
+		yes = 0;
 		if(strstr(tmp->name, search) != NULL)
 		{
 			ptr = strstr(tmp->name, search);
       PrintBookInfo(tmp);
+			while(1)
+			{
+				if(tmp->isbn == (tmp->next)->isbn)
+				{
+					booknum++;
+					if(tmp->yes_no == 'Y')
+					{
+						yes++;
+					}
+					tmp = tmp->next;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if(yes > 0)
+			{
+				printf("대여가능 여부 : Y (%d/%d)\n\n", yes, booknum);
+			}
+			else
+			{
+				printf("대여가능 여부 : N (%d/%d)\n\n", yes, booknum);
+			}
     }
 		tmp = tmp->next;
 	}
@@ -543,6 +546,8 @@ void NameFind(Book * head)
 void PublisherFind(Book * head)
 {
 	char search[50];
+	int booknum;
+	int yes;
 	Book * tmp = head;
 	char * ptr = NULL;
 
@@ -551,10 +556,36 @@ void PublisherFind(Book * head)
 
 	while(tmp->next != NULL)
 	{
+		booknum = 1;
+		yes = 0;
 		if(strstr(tmp->publisher, search) != NULL)
 		{
 			ptr = strstr(tmp->publisher, search);
       PrintBookInfo(tmp);
+			while(1)
+			{
+				if(tmp->isbn == (tmp->next)->isbn)
+				{
+					booknum++;
+					if(tmp->yes_no == 'Y')
+					{
+						yes++;
+					}
+					tmp = tmp->next;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if(yes > 0)
+			{
+				printf("대여가능 여부 : Y (%d/%d)\n\n", yes, booknum);
+			}
+			else
+			{
+				printf("대여가능 여부 : N (%d/%d)\n\n", yes, booknum);
+			}
     }
 		tmp = tmp->next;
 	}
@@ -568,6 +599,8 @@ void PublisherFind(Book * head)
 void IsbnFind(Book * head) // long long 형으로 바꾸자
 {
 	long long search;
+	int booknum;
+	int yes;
 	Book * tmp = head;
 	long long * ptr = NULL;
 
@@ -578,11 +611,36 @@ void IsbnFind(Book * head) // long long 형으로 바꾸자
 
 	while(tmp->next != NULL)
 	{
-		printf("%lld\n\n", tmp->isbn);
+		booknum = 1;
+		yes = 0;
 		if(tmp->isbn == search)
 		{
 			ptr = &(tmp->isbn);
       PrintBookInfo(tmp);
+			while(1)
+			{
+				if(tmp->isbn == (tmp->next)->isbn)
+				{
+					booknum++;
+					if(tmp->yes_no == 'Y')
+					{
+						yes++;
+					}
+					tmp = tmp->next;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if(yes > 0)
+			{
+				printf("대여가능 여부 : Y (%d/%d)\n\n", yes, booknum);
+			}
+			else
+			{
+				printf("대여가능 여부 : N (%d/%d)\n\n", yes, booknum);
+			}
     }
 		tmp = tmp->next;
 	}
@@ -596,20 +654,46 @@ void IsbnFind(Book * head) // long long 형으로 바꾸자
 void AuthorFind(Book * head)
 {
 	char search[50];
+	int booknum;
+	int yes;
 	Book * tmp = head;
 	char * ptr = NULL;
 
-	printf("\nInput Author Name : ");
+	printf("\n저자명을 입력하세요 : ");
 	gets(search);
-	// BookPrintList(head);
 
 	while(tmp->next != NULL)
 	{
-		printf("%lld\n\n", tmp->isbn);
+		booknum = 1;
+		yes = 0;
 		if(strstr(tmp->author, search) != NULL)
 		{
 			ptr = strstr(tmp->author, search);
       PrintBookInfo(tmp);
+			while(1)
+			{
+				if(tmp->isbn == (tmp->next)->isbn)
+				{
+					booknum++;
+					if(tmp->yes_no == 'Y')
+					{
+						yes++;
+					}
+					tmp = tmp->next;
+				}
+				else
+				{
+					break;
+				}
+			}
+			if(yes > 0)
+			{
+				printf("대여가능 여부 : Y (%d/%d)\n\n", yes, booknum);
+			}
+			else
+			{
+				printf("대여가능 여부 : N (%d/%d)\n\n", yes, booknum);
+			}
     }
 		tmp = tmp->next;
 	}
