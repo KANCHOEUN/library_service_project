@@ -1398,6 +1398,7 @@ int Return()
 
    tmp = tmp->next;
    tmp2 = tmp2->next;
+   tmp3 = tmp3->next;
 
    char * ID = (char *)malloc(sizeof(char)*10);
    struct tm * t1;
@@ -1441,6 +1442,7 @@ int Return()
           }
           tmp3 = tmp3->next;
         }
+        tmp3 = Bhead;
       }
       tmp2 = tmp2->next;
    }
@@ -1525,7 +1527,7 @@ void PrintClientInfo(Client * tmp)
 	printf("\n>>검색결과<<\n");
 	printf("학번 : %s\n", tmp->id);
 	printf("이름 : %s\n", tmp->name);
-	printf("주소 ; %s\n", tmp->address);
+	printf("주소 : %s\n", tmp->address);
 	printf("전화번호 : %s\n", tmp->phonenumber);
 }
 
