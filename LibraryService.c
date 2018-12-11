@@ -534,11 +534,11 @@ void My_Borrow_List(char * id)
 
    printf("\n>>내 대여목록<<\n\n");
 
-   while (tmp->next != NULL) // borrow.txt에서 내 학번있는지 반복
+   while (1) // borrow.txt에서 내 학번있는지 반복
    {
       if (strstr(tmp->id, id) != NULL)
       {
-         while (tmp2->next != NULL) // book.txt에서 내가 빌린 책 출력
+         while (1) // book.txt에서 내가 빌린 책 출력
          {
             if (tmp->booknum == tmp2->booknum)
             {
@@ -548,9 +548,17 @@ void My_Borrow_List(char * id)
                t1 = localtime(&(tmp->return_day));
                printf("반납일자 : %d년 %d월 %d일 %s\n\n", (*t1).tm_year + 1900, (*t1).tm_mon + 1, (*t1).tm_mday, day[(*t1).tm_wday]);
             }
+            if(tmp2->next == NULL)
+            {
+              break;
+            }
             tmp2 = tmp2->next;
          }
          tmp2 = Bhead;
+      }
+      if(tmp->next == NULL)
+      {
+        break;
       }
       tmp = tmp->next;
    }
@@ -1429,12 +1437,12 @@ int Return()
       tmp = tmp->next;
    }
 
-   while(tmp2->next != NULL)
+   while(1)
    {
       if(strcmp(ID, tmp2->id) == 0)
       {
         ptr = strcmp(ID, tmp2->id); // ptr2 = 0;
-        while(tmp3->next != NULL)
+        while(1)
         {
           if(tmp2->booknum == tmp3->booknum)
           {
@@ -1445,9 +1453,17 @@ int Return()
             t1 = localtime(&(tmp2->return_day));
             printf("반납일자 : %d년 %d월 %d일 %s\n\n", (*t1).tm_year + 1900, (*t1).tm_mon + 1, (*t1).tm_mday, day[(*t1).tm_wday]);
           }
+          if(tmp3->next == NULL)
+          {
+            break;
+          }
           tmp3 = tmp3->next;
         }
         tmp3 = Bhead;
+      }
+      if(tmp2->next == NULL)
+      {
+        break;
       }
       tmp2 = tmp2->next;
    }
@@ -1463,8 +1479,7 @@ int Return()
    scanf("%d", &booknumber);
    getchar();
 
-   FILE * ofp;
-   ofp = fopen("borrow.txt", "w");
+   FILE * ofp = fopen("borrow.txt", "w");
    Borrow * tmp4 = (Borrow *)malloc(sizeof(Borrow));
    tmp4->next = BWhead;
    int ptr2 = 0;
@@ -1485,6 +1500,7 @@ int Return()
             printf("\n반납이 완료되었습니다.\n");
             break;
          }
+
       }
       if (i != 0) {
          fprintf(ofp, "%s|%d|%u|%u\n", tmp4->id, tmp4->booknum, tmp4->rent_day, tmp4->return_day);
