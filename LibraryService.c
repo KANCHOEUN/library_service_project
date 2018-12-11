@@ -58,7 +58,11 @@ int ISBNBorrow(); // ISBN 대여
 int Return(); // 도서 반납
 void removeBorrowNode(Borrow *);
 void removeBorrowEndNode(Borrow *);
-void ClientPrintList(); // 회원 목록
+int ClientPrintList(); // 회원 목록
+void Clientnamefind();
+void Clientidfind();
+void Clientallfind();
+void PrintClientInfo(Client *);
 void Search(); // 도서 검색
 void PrintBookInfo(Book *); // 책 정보 하나 출력
 void NameFind(); //책제목 검색
@@ -820,8 +824,7 @@ void Admin_Login()
       Search();
       break;
    case '6':
-      Chead = ClientRead();
-      ClientPrintList(Chead);
+      ClientPrintList();
       break;
    case '7':
       count = 0;
@@ -1517,19 +1520,124 @@ int Return()
    return 0;
 }
 
-void ClientPrintList(Client * head)
+void PrintClientInfo(Client * tmp)
+{
+	printf("\n>>검색결과<<\n");
+	printf("학번 : %s\n", tmp->id);
+	printf("이름 : %s\n", tmp->name);
+	printf("주소 ; %s\n", tmp->address);
+	printf("전화번호 : %s\n", tmp->phonenumber);
+}
+
+void Clientnamefind()
+{
+	Client * head;
+	head = (Client *)malloc(sizeof(Client));
+	head = ClientRead();
+	char search[20];
+	Client * tmp = head;
+	char * ptr = NULL;
+
+	printf("이름을 입력하세요 : ");
+	gets(search);
+
+	while (tmp->next != NULL)
+	{
+		if (strstr(tmp->name, search) != NULL)
+		{
+			ptr = strstr(tmp->name, search);
+			PrintClientInfo(tmp);
+		}
+		tmp = tmp->next;
+	}
+
+	if (ptr == NULL)
+	{
+		printf("존재하지 않는 학생입니다.\n\n");
+	}
+
+	free(head);
+  sleep(2);
+}
+
+void Clientidfind()
+{
+	Client * head;
+	head = (Client *)malloc(sizeof(Client));
+	head = ClientRead();
+	char search[20];
+	Client * tmp = head;
+	int ptr = 0;
+
+	printf("학번을 입력하세요 : ");
+	gets(search);
+
+	while (tmp->next != NULL)
+	{
+		if (strstr(tmp->id, search) != NULL)
+		{
+			ptr = 1;
+			PrintClientInfo(tmp);
+		}
+		tmp = tmp->next;
+	}
+
+	if (ptr == 0)
+	{
+		printf("존재하지 않는 학생입니다.\n\n");
+	}
+
+	free(head);
+  sleep(2);
+}
+
+void Clientallfind()
+{
+	Client * head;
+	head = (Client *)malloc(sizeof(Client));
+	head = ClientRead();
+
+	int i = 1;
+	Client * tmp = head;
+	printf("\n");
+	while (tmp->next != NULL)
+	{
+		printf("%d. %s|%s|%s|%s|%s\n", i++, tmp->id, tmp->password, tmp->name, tmp->address, tmp->phonenumber);
+		tmp = tmp->next;
+	}
+
+	free(head);
+  sleep(2);
+}
+
+int ClientPrintList()
 {
    system("clear");
 
-   int i = 1;
-   Client * tmp = head;
-   printf("\n");
-   while (tmp->next != NULL)
-   {
-      printf("%d. %s|%s|%s|%s|%s\n", i++, tmp->id, tmp->password, tmp->name, tmp->address, tmp->phonenumber);
-      tmp = tmp->next;
-   }
-   sleep(10);
+   printf(">>회원목록<<\n");
+	printf("1. 이름검색\t2. 학번검색\n3. 전체검색\t4. 이전메뉴\n");
+	char choice;
+	scanf("%s", &choice);
+	getchar();
+
+	switch (choice)
+	{
+	case '1':
+		Clientnamefind();
+		break;
+	case '2' :
+		Clientidfind();
+		break;
+	case '3':
+		Clientallfind();
+		break;
+	case '4':
+		return 0;
+		break;
+	default :
+		printf("잘못 입력하셨습니다.\n");
+		break;
+	}
 }
 
 void Search()
