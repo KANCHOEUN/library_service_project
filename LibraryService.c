@@ -444,7 +444,7 @@ Client * ClientRead()
    FILE * sfp = fopen("client.txt", "wt");
    Client * tmp = head;
 
-   while (tmp->next != NULL)
+   while ( tmp->next != NULL )
    {
       fprintf(sfp, "%s|%s|%s|%s|%s\n", tmp->id, tmp->password, tmp->name, tmp->address, tmp->phonenumber);
       tmp = tmp->next;
@@ -746,11 +746,15 @@ void DeleteInfo(Client * head, char * id)
             removeclientEndNode(tmp2);
             printf("탈퇴가 완료되었습니다.\n");
             fprintf(ofp, "%s|%s|%s|%s|%s\n", tmp2->id, tmp2->password, tmp2->name, tmp2->address, tmp2->phonenumber);
+
+            count = 0;
+
             break;
          }
          else
          {
             removeclientNode(tmp2);
+            count = 0;
             printf("탈퇴가 완료되었습니다.\n");
          }
       }
@@ -1173,13 +1177,15 @@ int Rented()
 		fscanf(cfp, "%[^|]%*[^\n]\n", data);
 		if(strcmp(data, id) == 0)
 		{
+      fclose(cfp);
+      free(data);
 			break;
 		}
 		if(feof(cfp))
 		{
 			printf("\n학번이 존재하지 않습니다.\n\n");
-			free(data);
 			fclose(cfp);
+      free(data);
 			return 0;
 		}
 	}
@@ -1398,7 +1404,6 @@ int Return()
 
    tmp = tmp->next;
    tmp2 = tmp2->next;
-   tmp3 = tmp3->next;
 
    char * ID = (char *)malloc(sizeof(char)*10);
    struct tm * t1;
