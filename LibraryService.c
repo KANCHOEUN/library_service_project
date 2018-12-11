@@ -39,9 +39,9 @@ int Login(); // 로그인
 void Client_Login(char *); // 회원 로그인
 void My_Borrow_List(char *); // 내 대여 목록
 void Edit(); // 개인 정보 수정
-void pwdchange(Client *);
-void adschange(Client *);
-void pnbchange(Client *);
+void pwdchange(Client *); // 비밀번호 수정
+void adschange(Client *); // 주소 수정
+void pnbchange(Client *); // 전화 번호 수정
 void DropOut(char *); // 회원 탈퇴
 void DeleteInfo(Client *, char *);
 int Check(char *);
@@ -52,11 +52,15 @@ void Delete(); // 도서 삭제
 int NameDelete(); //도서삭제_도서제목으로 검색 후 삭제
 int ISBNDelete(); //도서삭제-isbn으로 검색 후 삭제
 void BorrowBook(); // 도서 대여
-void Return(); // 도서 반납
+int Rented();
+int NameBorrow(); // 도서명 대여
+int ISBNBorrow(); // ISBN 대여
+int Return(); // 도서 반납
+void removeBorrowNode(Borrow *);
+void removeBorrowEndNode(Borrow *);
 void ClientPrintList(); // 회원 목록
-
 void Search(); // 도서 검색
-void PrintBookInfo(Book *);
+void PrintBookInfo(Book *); // 책 정보 하나 출력
 void NameFind(); //책제목 검색
 void PublisherFind(); //출판사 검색
 void IsbnFind(); //isbn 검색
@@ -80,9 +84,6 @@ Client * Chead = NULL;
 
 Borrow * BorrowRead();
 Borrow * BWhead = NULL;
-int Rented();
-int NameBorrow();
-int ISBNBorrow();
 
 int count = 1;
 int count2 = 1;
@@ -523,10 +524,8 @@ void Client_Login(char *id)
 
 void My_Borrow_List(char * id)
 {
-   Borrow * borrowhead = BorrowRead();
-   Book * bookhead = BookRead();
-   Borrow * tmp = borrowhead;
-   Book * tmp2 = bookhead;
+   Borrow * tmp = BWhead;
+   Book * tmp2 = Bhead;
    struct tm * t1;
 
    printf("\n>>내 대여목록<<\n\n");
@@ -547,7 +546,7 @@ void My_Borrow_List(char * id)
             }
             tmp2 = tmp2->next;
          }
-         tmp2 = bookhead;
+         tmp2 = Bhead;
       }
       tmp = tmp->next;
    }
@@ -1012,8 +1011,6 @@ int NameDelete()
       printf("존재하지 않는 도서입니다.\n\n");
    }
 
-   free(tmp2);
-
    count2 = 0;
 
    return 0;
@@ -1109,8 +1106,6 @@ int ISBNDelete()
    {
       printf("존재하지 않는 도서입니다.\n\n");
    }
-
-   free(tmp2);
 
    count2 = 0;
 
@@ -1242,6 +1237,9 @@ int Rented()
 		tmp = tmp->next;
 	}
 
+  Bhead = BookRead();
+  BWhead = BorrowRead();
+
 	free(id);
 	free(tmp);
   fclose(bkfp);
@@ -1367,10 +1365,156 @@ void BorrowBook()
    }
 }
 
-void Return()
+void removeBorrowNode(Borrow * node)
 {
-   printf("Return\n\n");
+   Borrow *removeNode = node->next;
+   node->next = removeNode->next;
+
+   free(removeNode);
+}
+
+void removeBorrowEndNode(Borrow * node)
+{
+   Borrow * removeNode = node->next;
+   node->next = NULL;
+
+   free(removeNode);
+}
+
+int Return()
+{
+   Chead = ClientRead();
+   Bhead = BookRead();
+   BWhead = BorrowRead();
+   Client * tmp = (Client *)malloc(sizeof(Client));
+   Borrow * tmp2 = (Borrow *)malloc(sizeof(Borrow));
+   Book * tmp3 = (Book *)malloc(sizeof(Book));
+   tmp->next = Chead;
+   tmp2->next = BWhead;
+   tmp3->next = Bhead;
+
+   tmp = tmp->next;
+   tmp2 = tmp2->next;
+
+   char * ID = (char *)malloc(sizeof(char)*10);
+   struct tm * t1;
+   int booknumber;
+   int ptr = 1;
+
+   printf("\n학번을 입력하세요 : ");
+   scanf("%s", ID);
+   getchar();
+
+   while(1)
+   {
+      if(strcmp(ID, tmp->id) == 0)
+      {
+         printf("\n>> 회원의 대여 목록 <<\n\n");
+         break;
+      }
+      if(tmp->next == NULL)
+      {
+         printf("\n존재하지 않는 학번입니다.\n");
+         return 0;
+      }
+      tmp = tmp->next;
+   }
+
+   while(tmp2->next != NULL)
+   {
+      if(strcmp(ID, tmp2->id) == 0)
+      {
+        ptr = strcmp(ID, tmp2->id); // ptr2 = 0;
+        while(tmp3->next != NULL)
+        {
+          if(tmp2->booknum == tmp3->booknum)
+          {
+            printf("도서번호 : %d\n", tmp3->booknum);
+            printf("도서명 : %s\n", tmp3->name);
+            t1 = localtime(&(tmp2->rent_day));
+            printf("대여일자 : %d년 %d월 %d일 %s\n", (*t1).tm_year + 1900, (*t1).tm_mon + 1, (*t1).tm_mday, day[(*t1).tm_wday]);
+            t1 = localtime(&(tmp2->return_day));
+            printf("반납일자 : %d년 %d월 %d일 %s\n\n", (*t1).tm_year + 1900, (*t1).tm_mon + 1, (*t1).tm_mday, day[(*t1).tm_wday]);
+          }
+          tmp3 = tmp3->next;
+        }
+      }
+      tmp2 = tmp2->next;
+   }
+
+   if(ptr != 0)
+   {
+     printf("대여한 도서가 존재하지 않습니다.\n");
+     sleep(3);
+     return 0;
+   }
+
+   printf("\n반납할 도서번호를 입력하세요 : ");
+   scanf("%d", &booknumber);
+   getchar();
+
+   FILE * ofp;
+   ofp = fopen("borrow.txt", "w");
+   Borrow * tmp4 = (Borrow *)malloc(sizeof(Borrow));
+   tmp4->next = BWhead;
+   int ptr2 = 0;
+   int i = 0;
+
+   while (tmp4->next != NULL)
+   {
+      if ((tmp4->next->booknum == booknumber) != 0) //입력한 도서번호와 삭제할 도서번호가 같다면
+      {
+         ptr2 = (tmp4->next->booknum == booknumber);
+         if (tmp4->next->next != NULL) { //처음, 중간 노드 삭제할 경우
+            removeBorrowNode(tmp4);
+            printf("\n반납이 완료되었습니다.\n");
+         }
+         else { //마지막 노드를 삭제할 경우
+            removeBorrowEndNode(tmp4);
+            fprintf(ofp, "%s|%d|%u|%u\n", tmp4->id, tmp4->booknum, tmp4->rent_day, tmp4->return_day);
+            printf("\n반납이 완료되었습니다.\n");
+            break;
+         }
+      }
+      if (i != 0) {
+         fprintf(ofp, "%s|%d|%u|%u\n", tmp4->id, tmp4->booknum, tmp4->rent_day, tmp4->return_day);
+      }
+      i += 1;
+      tmp4 = tmp4->next;
+   }
+   fclose(ofp);
+
+   if (ptr2 == 0)
+   {
+      printf("\n존재하지 않는 도서입니다.\n\n");
+      sleep(2);
+      return 0;
+   }
+
+   FILE * ofp2 = fopen("book.txt", "w");
+   Book * tmp5 = (Book *)malloc(sizeof(Book));
+   tmp5->next = Bhead;
+   i = 0;
+
+   tmp5 = tmp5->next;
+
+   while (tmp5->next != NULL)
+   {
+      if (tmp5->booknum == booknumber) //입력한 도서번호와 삭제할 도서번호가 같다면
+      {
+         ptr = (tmp5->booknum == booknumber);
+         tmp5->yes_no = 'Y';
+      }
+      fprintf(ofp2, "%lld|%s|%s|%s|%d|%s|%c\n", tmp5->isbn, tmp5->name, tmp5->publisher, tmp5->author, tmp5->booknum, tmp5->library, tmp5->yes_no);
+      tmp5 = tmp5->next;
+   }
+   fclose(ofp2);
+
+   BWhead = BorrowRead();
+   Bhead = BookRead();
+
    sleep(2);
+   return 0;
 }
 
 void ClientPrintList(Client * head)
